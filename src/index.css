@@ -1,0 +1,57 @@
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, body, #root {
+  height: 100%;
+}
+
+body {
+  background-color: #EEF0E9;
+  color: #17231E;
+  font-feature-settings: 'tnum' 1;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+
+::selection {
+  background: #E4A63B;
+  color: #17231E;
+}
+
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+/* Hide scrollbars for clean mobile app feel */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.input {
+  width: 100%;
+  border: 1px solid #DBDECF;
+  background: #EEF0E9;
+  border-radius: 8px;
+  padding: 0.65rem 0.85rem;
+  font-size: 15px;
+  color: #17231E;
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+.input:focus {
+  border-color: #E4A63B;
+}
+.input::placeholder {
+  color: #9AA096;
+}
+
+/* Mobile safe area padding for iOS / Android notch bars */
+.pb-safe {
+  padding-bottom: env(safe-area-inset-bottom, 1rem);
+}

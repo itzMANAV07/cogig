@@ -1,0 +1,230 @@
+// Demo data for multi-region testing (Bengaluru, Davangere, Patna)
+
+export const DEMO_CITIES = [
+  {
+    id: 'bengaluru',
+    name: 'Bengaluru, Karnataka',
+    tier: 'metro',
+    multiplier: 1.3,
+    center: [12.9716, 77.5946],
+    defaultAddress: 'Prakruthi Twp - Horamavu Agara - Hennur, Bengaluru',
+    coopName: 'Bengaluru Workers Labour Cooperative Society',
+    jurisdiction: 'Bengaluru East & Hennur-Horamavu Hub',
+  },
+  {
+    id: 'davangere',
+    name: 'Davangere, Karnataka',
+    tier: 'tier2',
+    multiplier: 1.15,
+    center: [14.4673, 75.9241],
+    defaultAddress: 'Vidyanagar Main Road, Davangere, Karnataka',
+    coopName: 'Sri Basaveshwara Labour Cooperative Society',
+    jurisdiction: 'Davangere Central & Vidyanagar Hub',
+  },
+  {
+    id: 'patna',
+    name: 'Patna, Bihar',
+    tier: 'tier3',
+    multiplier: 1.0,
+    center: [25.5941, 85.1376],
+    defaultAddress: 'Green Valley Society, Patna, Bihar',
+    coopName: 'Shanti Labour Cooperative Society',
+    jurisdiction: 'Patna Central & East Zone',
+  },
+];
+
+export const DEMO_RWA = {
+  stats: { activeContracts: 3, totalBudget: 75000, pendingApproval: 2 },
+  contracts: [
+    { id: 1, client: 'Prakruthi Twp RWA, Bengaluru', role: 'Painter', coop: 'Bengaluru Workers Labour Cooperative', status: 'ACTIVE', budget: 25000 },
+    { id: 2, client: 'Vidyanagar Society, Davangere', role: 'Plumber', coop: 'Sri Basaveshwara Labour Cooperative', status: 'PENDING', budget: 18000 },
+    { id: 3, client: 'Green Valley RWA, Patna', role: 'Supervisor', coop: 'Shanti Labour Cooperative', status: 'COMPLETED', budget: 32000 },
+  ],
+  approvals: [
+    { id: 1, worker: 'Ramesh Kumar', date: 'Sep 6, 2026', status: 'PENDING_APPROVAL' },
+    { id: 2, worker: 'Suresh Yadav', date: 'Sep 6, 2026', status: 'PENDING_APPROVAL' },
+  ],
+};
+
+export const DEMO_COOP = {
+  stats: { rating: 4.8, welfareFund: 5800, workers: 4 },
+  workers: [
+    { id: 1, name: 'Manjunath Gowda', skill: 'Painter, AC Tech', rate: 550, phone: '98765 11223', adhaar: 'XXXX-XXXX-9912', yearsExperience: 6, verified: true, preferredLanguage: 'kn' },
+    { id: 2, name: 'Ramesh Kumar', skill: 'Painter', rate: 500, phone: '98765 43210', adhaar: 'XXXX-XXXX-4921', yearsExperience: 5, verified: true, preferredLanguage: 'hi' },
+    { id: 3, name: 'Suresh Yadav', skill: 'Plumber', rate: 550, phone: '98765 12345', adhaar: 'XXXX-XXXX-8812', yearsExperience: 3, verified: true, preferredLanguage: 'hi' },
+    { id: 4, name: 'Anita Devi', skill: 'Supervisor', rate: 700, phone: '98765 67890', adhaar: 'XXXX-XXXX-3341', yearsExperience: 8, verified: true, preferredLanguage: 'en' },
+  ],
+  tickets: [
+    {
+      id: 1,
+      ticketId: 'TKT-W-1001',
+      reporterType: 'worker',
+      worker: 'Suresh Yadav',
+      reporterName: 'Suresh Yadav',
+      preferredLanguage: 'hi',
+      issue: 'sir ji day 3 ka paisa nahi aaya account mein abhi tak',
+      originalMessage: 'sir ji day 3 ka paisa nahi aaya account mein abhi tak kaam kar liya tha lekin approve nahi hua',
+      aiSummary: 'Worker reports non-receipt of Day 3 payment. States work was completed but attendance approval is still pending from the society.',
+      aiViolationType: 'payment_dispute',
+      hasVoiceMessage: true,
+      status: 'OPEN',
+      category: null,
+      created_at: new Date(Date.now() - 1 * 36e5).toISOString(),
+    },
+    {
+      id: 2,
+      ticketId: 'TKT-C-2001',
+      reporterType: 'customer',
+      worker: 'Manjunath Gowda',
+      reporterName: 'Ankit Mehta',
+      preferredLanguage: 'en',
+      issue: 'Customer disputed final job quality rating',
+      originalMessage: 'The painter left patches on the ceiling and there are visible brush marks on the wall edges. The work is not up to the standard I expected.',
+      aiSummary: 'Customer reports incomplete painting job with visible brush marks and uneven patches on ceiling. Quality of workmanship does not meet expected standards.',
+      aiViolationType: 'quality_complaint',
+      hasVoiceMessage: false,
+      status: 'OPEN',
+      category: null,
+      created_at: new Date(Date.now() - 10 * 36e5).toISOString(),
+    },
+    {
+      id: 3,
+      ticketId: 'TKT-C-2002',
+      reporterType: 'customer',
+      worker: 'Anita Devi',
+      reporterName: 'Meera Nair',
+      preferredLanguage: 'en',
+      issue: 'Cash payment demanded outside escrow',
+      originalMessage: 'The supervisor asked me to pay ₹500 in cash for "extra materials" that were not part of the booking. She refused to add it through the app.',
+      aiSummary: 'Customer reports that supervisor demanded ₹500 cash payment outside escrow system for undocumented materials. Worker refused to use in-app spare parts feature.',
+      aiViolationType: 'cash_demand',
+      hasVoiceMessage: false,
+      status: 'OPEN',
+      category: 'cash_demand',
+      created_at: new Date(Date.now() - 2 * 36e5).toISOString(),
+    },
+    {
+      id: 4,
+      ticketId: 'TKT-W-1002',
+      reporterType: 'worker',
+      worker: 'Ramesh Kumar',
+      reporterName: 'Ramesh Kumar',
+      preferredLanguage: 'hi',
+      issue: 'customer ne gaali diya aur kaam karne nahi diya',
+      originalMessage: 'sahab customer bahut gussa kar raha tha aur gaali diya mujhe kaam karne nahi de raha hai bina reason ke mera din barbad ho gaya',
+      aiSummary: 'Worker reports verbal abuse and harassment by customer. Client prevented worker from performing duties without valid reason, resulting in lost workday.',
+      aiViolationType: 'harassment',
+      hasVoiceMessage: true,
+      status: 'OPEN',
+      category: null,
+      created_at: new Date(Date.now() - 5 * 36e5).toISOString(),
+    },
+    {
+      id: 5,
+      ticketId: 'TKT-W-1003',
+      reporterType: 'worker',
+      worker: 'Manjunath Gowda',
+      reporterName: 'Manjunath Gowda',
+      preferredLanguage: 'kn',
+      issue: 'site nalli safety gear illa, dangerous kelas',
+      originalMessage: 'sir site nalli yavude safety gear kodilla helmet illa gloves illa 3rd floor nalli painting maadbekittu bahala dangerous aagide',
+      aiSummary: 'Worker reports absence of safety equipment at job site. No helmet or gloves provided for 3rd floor painting work. Reports hazardous working conditions.',
+      aiViolationType: 'safety_hazard',
+      hasVoiceMessage: true,
+      status: 'OPEN',
+      category: null,
+      created_at: new Date(Date.now() - 8 * 36e5).toISOString(),
+    },
+    {
+      id: 6,
+      ticketId: 'TKT-C-2003',
+      reporterType: 'customer',
+      worker: 'Suresh Yadav',
+      reporterName: 'Priya Sharma',
+      preferredLanguage: 'hi',
+      issue: 'plumber 2 ghante late aaya kaam pe',
+      originalMessage: 'plumber ko subah 10 baje aana tha lekin 12 baje aaya upar se koi intimation nahi di mujhe poora din wait karna pada',
+      aiSummary: 'Customer reports plumber arrived 2 hours late (12 PM instead of scheduled 10 AM) without prior intimation. Customer had to wait the entire morning.',
+      aiViolationType: 'attendance_issue',
+      hasVoiceMessage: true,
+      status: 'OPEN',
+      category: null,
+      created_at: new Date(Date.now() - 3 * 36e5).toISOString(),
+    },
+  ],
+};
+
+// Worker-side support tickets (separate from coop tickets)
+export const DEMO_WORKER_TICKETS = [
+  {
+    id: 1,
+    ticketId: 'TKT-W-1001',
+    category: 'payment',
+    issue: 'Day 3 attendance not approved, payment pending',
+    description: 'sir ji day 3 ka paisa nahi aaya account mein abhi tak kaam kar liya tha lekin approve nahi hua',
+    status: 'OPEN',
+    createdAt: new Date(Date.now() - 1 * 36e5).toISOString(),
+    resolvedBy: null,
+  },
+  {
+    id: 2,
+    ticketId: 'TKT-W-1002',
+    category: 'harassment',
+    issue: 'Customer used abusive language on site',
+    description: 'Customer was very aggressive and used abusive language. Did not allow me to complete work without any valid reason.',
+    status: 'IN_REVIEW',
+    createdAt: new Date(Date.now() - 5 * 36e5).toISOString(),
+    resolvedBy: 'Shanti Labour Cooperative',
+  },
+  {
+    id: 3,
+    ticketId: 'TKT-W-1003',
+    category: 'safety',
+    issue: 'No safety equipment provided at 3rd floor site',
+    description: 'No helmet or gloves provided for 3rd floor painting work. Very dangerous conditions.',
+    status: 'RESOLVED',
+    createdAt: new Date(Date.now() - 24 * 36e5).toISOString(),
+    resolvedBy: 'Shanti Labour Cooperative',
+  },
+];
+
+export const DEMO_WORKERS = [
+  {
+    id: 1,
+    name: 'Manjunath Gowda',
+    stats: { released: 9200, daysWorked: 7, welfareFund: 5800 },
+    history: [
+      { id: 1, date: 'Sep 5, 2026', status: 'PRESENT', share: 510 },
+      { id: 2, date: 'Sep 4, 2026', status: 'PRESENT', share: 510 },
+    ],
+    jobs: [{ id: 1, client: 'Prakruthi Twp RWA, Bengaluru', role: 'AC Repair', status: 'ACTIVE', offer: 'ACCEPTED' }],
+  },
+  {
+    id: 2,
+    name: 'Ramesh Kumar',
+    stats: { released: 8800, daysWorked: 6, welfareFund: 4200 },
+    history: [
+      { id: 1, date: 'Sep 5, 2026', status: 'PRESENT', share: 465 },
+      { id: 2, date: 'Sep 4, 2026', status: 'PRESENT', share: 465 },
+    ],
+    jobs: [{ id: 1, client: 'Vidyanagar Society, Davangere', role: 'Painter', status: 'ACTIVE', offer: 'ACCEPTED' }],
+  },
+];
+
+// Geo-spatial demo data for Bengaluru, Davangere, Patna
+export const DEMO_COOPERATIVES = [
+  // Bengaluru
+  { id: 1, name: 'Bengaluru Workers Labour Cooperative', city: 'bengaluru', lat: 12.9716, lng: 77.5946, radiusKm: 8, workers: 14, rating: 4.8 },
+  { id: 2, name: 'Namma Karunadu Labour Coop, Bengaluru', city: 'bengaluru', lat: 12.9141, lng: 77.6412, radiusKm: 6, workers: 9, rating: 4.6 },
+  // Davangere
+  { id: 3, name: 'Sri Basaveshwara Labour Cooperative, Davangere', city: 'davangere', lat: 14.4673, lng: 75.9241, radiusKm: 5, workers: 8, rating: 4.7 },
+  { id: 4, name: 'Davangere Shramika Cooperative', city: 'davangere', lat: 14.4550, lng: 75.9180, radiusKm: 4, workers: 6, rating: 4.5 },
+  // Patna
+  { id: 5, name: 'Shanti Labour Cooperative, Patna', city: 'patna', lat: 25.5941, lng: 85.1376, radiusKm: 6, workers: 5, rating: 4.7 },
+];
+
+export const DEMO_JOB_SITES = [
+  { id: 1, client: 'Prakruthi Twp RWA', role: 'AC Repair', status: 'ACTIVE', lat: 12.9800, lng: 77.6000 },
+  { id: 2, client: 'Vidyanagar Society', role: 'Plumber', status: 'PENDING', lat: 14.4700, lng: 75.9200 },
+  { id: 3, client: 'Green Valley RWA', role: 'Painter', status: 'ACTIVE', lat: 25.5980, lng: 85.1420 },
+];

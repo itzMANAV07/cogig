@@ -14,6 +14,7 @@ export default function CustomerHome() {
   const { customer, setCustomer, setSelectedCategory, setSelectedService, surgingJobs, selectedCity } = useAppState();
   const { t } = useTranslation();
   const [searchQuery, setSearchQuery] = useState('');
+  const [surgeDismissed, setSurgeDismissed] = useState(false);
   const address = customer?.place || selectedCity?.defaultAddress || 'Bengaluru, Karnataka';
 
   const handleAddressChange = (newAddr) => {
@@ -52,42 +53,86 @@ export default function CustomerHome() {
         {/* Search Bar */}
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
 
-        {/* Dynamic Surging Jobs Banner (Derived from Cooperative Admin Demand Forecast & City Hub) */}
-        {surgingJobs && surgingJobs.length > 0 && (
-          <div className="relative overflow-hidden rounded-2xl bg-gradient-to-r from-marigold-dark via-marigold to-marigold p-4 text-ink shadow-sm">
-            {/* Background Illustration */}
-            <div className="absolute -right-2 -top-4 bottom-0 w-1/3 flex items-center justify-end pr-2 opacity-90 pointer-events-none">
-               <div className="absolute inset-0 bg-gradient-to-l from-white/20 to-transparent mix-blend-overlay blur-md"></div>
-               <div className="text-5xl drop-shadow-md">🌧️⚡</div>
+        {/* Modern, Streamlined High-Demand Surge Alert (Urban Company / Swiggy inspired) */}
+        {surgingJobs && surgingJobs.length > 0 && !surgeDismissed && (
+          <div className="relative overflow-hidden rounded-2xl border border-amber-300/80 bg-gradient-to-r from-amber-50 via-orange-50/40 to-amber-50/20 p-3.5 shadow-2xs transition-all animate-fadeIn">
+            {/* Top Micro-Header: Live Status, City, and Close Button */}
+            <div className="flex items-center justify-between gap-2 mb-2 pb-1.5 border-b border-amber-200/50">
+              <div className="flex items-center gap-1.5">
+                <span className="relative flex size-2">
+                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-amber-500 opacity-75" />
+                  <span className="relative inline-flex size-2 rounded-full bg-amber-600" />
+                </span>
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-amber-900 bg-amber-100 border border-amber-300 px-2 py-0.5 rounded-full">
+                  High Demand Spike
+                </span>
+                <span className="text-[10px] font-bold text-emerald-700 bg-emerald-100/90 border border-emerald-200 px-1.5 py-0.5 rounded-full">
+                  0% Surge Markup
+                </span>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <span className="text-[11px] font-semibold text-muted flex items-center gap-1">
+                  <Icon name="Location01Icon" size={11} className="text-amber-600" />
+                  <span>{selectedCity?.name?.split(',')[0] || 'Davangere'}</span>
+                </span>
+                <button
+                  type="button"
+                  onClick={() => setSurgeDismissed(true)}
+                  className="size-5 rounded-full hover:bg-amber-200/60 flex items-center justify-center text-muted hover:text-ink transition-colors text-xs font-bold leading-none"
+                  aria-label="Dismiss banner"
+                >
+                  ✕
+                </button>
+              </div>
             </div>
 
-            <div className="relative z-10 pr-12">
-              <div className="flex items-center justify-between">
-                <span className="inline-flex items-center gap-1 rounded-full bg-ink px-2.5 py-0.5 text-[10px] font-extrabold text-paper uppercase tracking-wider">
-                  <Icon name="FlashIcon" size={12} className="text-marigold" />
-                  Coop Demand Surge
-                </span>
-                <span className="text-[11px] font-bold text-ink/80 bg-white/20 px-2 py-0.5 rounded-full backdrop-blur-sm">{selectedCity?.name || 'Bengaluru Region'}</span>
+            {/* Main Content Row: Trade Icon, Details & Quick Book CTA */}
+            <div className="flex items-center justify-between gap-3">
+              <div className="flex items-center gap-2.5 min-w-0">
+                <div className="flex size-10 shrink-0 items-center justify-center rounded-xl bg-amber-500/15 border border-amber-400/40 text-amber-800 shadow-2xs">
+                  <Icon
+                    name={
+                      surgingJobs[0].id === 'plumber'
+                        ? 'DropletIcon'
+                        : surgingJobs[0].id === 'electrician'
+                        ? 'FlashIcon'
+                        : surgingJobs[0].id === 'painter'
+                        ? 'PaintBoardIcon'
+                        : 'Wrench01Icon'
+                    }
+                    size={20}
+                  />
+                </div>
+                <div className="min-w-0">
+                  <h3 className="text-xs sm:text-sm font-bold text-ink leading-tight truncate">
+                    {surgingJobs[0].title}
+                  </h3>
+                  <p className="text-[11px] text-muted font-medium mt-0.5 truncate max-w-[200px] sm:max-w-xs">
+                    {surgingJobs[0].surgeReason}
+                  </p>
+                  <div className="mt-1 flex items-center gap-2 text-[11px]">
+                    <span className="font-mono font-extrabold text-ink">
+                      ₹{surgingJobs[0].rate || 550}/day
+                    </span>
+                    <span className="text-[10px] font-semibold text-indigo">
+                      · Govt Wage Protected
+                    </span>
+                  </div>
+                </div>
               </div>
 
-              <div className="mt-2.5 space-y-1">
-                <h3 className="text-base font-extrabold leading-tight text-ink">
-                  🔥 {surgingJobs[0].title}
-                </h3>
-                <p className="text-xs text-ink/90 font-semibold">
-                  {surgingJobs[0].surgeReason}
-                </p>
-              </div>
-
+              {/* Action Button */}
               <button
+                type="button"
                 onClick={() => {
                   const foundSvc = SERVICES.community.find((s) => s.id === surgingJobs[0].id) || SERVICES.community[1];
                   handleSelectService(foundSvc, 'community');
                 }}
-                className="mt-3 flex items-center gap-1.5 rounded-xl bg-ink px-3.5 py-2 text-xs font-bold text-paper shadow-sm hover:bg-ink/90 transition-transform active:scale-95"
+                className="shrink-0 flex items-center gap-1 rounded-xl bg-ink hover:bg-slate-800 active:scale-95 text-paper px-3 py-2 text-xs font-bold shadow-xs transition-all"
               >
-                <span>Book Surging Crew Now</span>
-                <Icon name="ArrowLeft01Icon" size={14} className="rotate-180" />
+                <span>Book</span>
+                <Icon name="ArrowLeft01Icon" size={12} className="rotate-180" />
               </button>
             </div>
           </div>

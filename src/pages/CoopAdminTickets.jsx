@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PageShell } from '../components/PageShell';
+import { CoopAdminLayout } from '../components/CoopAdminLayout';
 import { Icon } from '../components/Icon';
 import { PillBadge } from '../components/PillBadge';
 import { deriveDisputeTier, tierTone, tierKey } from '../lib/disputeTiers';
@@ -66,11 +66,10 @@ export default function CoopAdminTickets() {
   };
 
   return (
-    <PageShell
-      title="Dispute & Safety Tickets"
-      subtitle="Review member complaints, voice messages, AI summaries, and issue resolution actions"
-      wide
-      roleNav="coop"
+    <CoopAdminLayout
+      activeNav="complaints"
+      title="Complaints & Dispute Resolution"
+      subtitle="Review member safety reports, customer disputes, AI summaries, and issue resolution actions"
     >
       {/* Tab Switcher */}
       <div className="mb-6 flex flex-wrap items-center justify-between gap-4">
@@ -257,6 +256,6 @@ export default function CoopAdminTickets() {
           })
         )}
       </div>
-    </PageShell>
+    </CoopAdminLayout>
   );
 }

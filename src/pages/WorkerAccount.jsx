@@ -27,7 +27,15 @@ export default function WorkerAccount() {
                 </span>
               </div>
               <p className="text-xs text-muted font-medium">+91 98765 43210 · AC Tech & Painter</p>
-              <p className="text-xs font-bold text-indigo mt-0.5">Shanti Labour Cooperative Society</p>
+              <p className="text-xs font-bold text-indigo mt-0.5">Sri Basaveshwara Labour Cooperative Society</p>
+              <div className="flex items-center gap-2 flex-wrap mt-1.5">
+                <span className="rounded-md bg-emerald-50 border border-emerald-200 text-emerald-800 px-2 py-0.5 text-[10px] font-bold font-mono">
+                  ✓ e-Shram UAN: 2847 8812 3901
+                </span>
+                <span className="rounded-md bg-indigo-light text-indigo border border-indigo/20 px-2 py-0.5 text-[10px] font-bold">
+                  🎓 Skill India NSQF-4 (PMKVY)
+                </span>
+              </div>
             </div>
           </div>
         </div>
@@ -47,6 +55,49 @@ export default function WorkerAccount() {
           </div>
         </div>
 
+        {/* Year-End Cooperative Patronage Dividend (ICA Principle 3) */}
+        <div className="rounded-2xl border-2 border-amber-300 bg-gradient-to-br from-amber-50 via-surface to-amber-50/30 p-4 shadow-sm space-y-3">
+          <div className="flex items-center justify-between border-b border-amber-200/80 pb-2.5">
+            <div className="flex items-center gap-2">
+              <span className="flex size-8 items-center justify-center rounded-xl bg-amber-500 text-white font-bold text-xs">
+                ★
+              </span>
+              <div>
+                <h3 className="text-xs font-bold text-amber-900 uppercase tracking-wider">
+                  Year-End Patronage Dividend (सहकारी लाभांश)
+                </h3>
+                <span className="text-[10px] text-muted font-medium">ICA Principle 3: Member Economic Participation</span>
+              </div>
+            </div>
+            <span className="text-xl font-extrabold text-amber-800 font-mono">
+              ₹4,260
+            </span>
+          </div>
+
+          <div className="space-y-2 text-xs">
+            <div className="grid grid-cols-2 gap-2 text-[11px]">
+              <div className="rounded-xl bg-paper/90 p-2.5 border border-amber-200/60">
+                <span className="text-muted block">Jobs Completed (FY26-27):</span>
+                <span className="font-bold text-ink font-mono text-sm">142 Jobs</span>
+              </div>
+              <div className="rounded-xl bg-paper/90 p-2.5 border border-amber-200/60">
+                <span className="text-muted block">Estimated AGM Dividend:</span>
+                <span className="font-bold text-success font-mono text-sm">₹30 / job</span>
+              </div>
+            </div>
+
+            <div className="rounded-xl bg-white/80 p-2.5 text-[11px] text-slate-700 leading-relaxed border border-amber-200/40">
+              <p>
+                <strong>Zero Private Venture Extraction:</strong> Unlike private apps that extract 20-30% commissions forever, CoGig charges only 2% cost recovery. Audited annual platform operating surplus is refunded to active members at the Annual General Meeting (AGM).
+              </p>
+              <div className="mt-2 flex items-center justify-between text-[10px] font-bold text-amber-800 pt-1 border-t border-amber-100">
+                <span>Disbursement Date: 31st March 2027</span>
+                <span className="text-emerald-700">✓ Audited & Eligible</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
         {/* Cooperative Membership Benefits */}
         <div className="rounded-2xl border border-line bg-surface p-4 space-y-2">
           <h3 className="text-xs font-bold text-ink uppercase tracking-wider">Cooperative Welfare Rights</h3>
@@ -57,7 +108,7 @@ export default function WorkerAccount() {
             </div>
             <div className="rounded-xl bg-paper p-3 font-medium text-ink flex items-center gap-2">
               <Icon name="UserGroup02Icon" size={16} className="text-indigo" />
-              <span>Voting Member of Shanti Labour Cooperative (Registration #LCS-2026-045)</span>
+              <span>Voting Member of Sri Basaveshwara Labour Cooperative (Registration #MSCS/CR/2026/KA-08)</span>
             </div>
           </div>
         </div>

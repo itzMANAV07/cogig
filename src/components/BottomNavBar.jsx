@@ -17,12 +17,6 @@ const ROLE_TABS = {
     { id: 'support', path: '/worker/support', icon: 'AlertCircleIcon', labelKey: 'navSupport', defaultLabel: 'Support', hasDot: true },
     { id: 'account', path: '/worker/account', icon: 'User01Icon', labelKey: 'navAccount', defaultLabel: 'Account' },
   ],
-  coop: [
-    { id: 'home', path: '/coop-admin/dashboard', icon: 'Home01Icon', labelKey: 'navHome', defaultLabel: 'Home' },
-    { id: 'workers', path: '/coop-admin/workers', icon: 'UserGroup02Icon', labelKey: 'navWorkers', defaultLabel: 'Workers' },
-    { id: 'tickets', path: '/coop-admin/tickets', icon: 'AlertCircleIcon', labelKey: 'navTickets', defaultLabel: 'Tickets', hasDot: true },
-    { id: 'account', path: '/coop-admin/account', icon: 'User01Icon', labelKey: 'navAccount', defaultLabel: 'Account' },
-  ],
 };
 
 export function BottomNavBar({ role = 'customer' }) {

@@ -6,62 +6,71 @@ import { Icon } from '../components/Icon';
 import { Modal } from '../components/Modal';
 import { DisputeStepper } from '../components/DisputeStepper';
 import { useTranslation } from '../lib/i18n/LanguageContext';
+import { useAppState } from '../lib/appState';
 import { deriveDisputeTier } from '../lib/disputeTiers';
 import { supabase, isSupabaseConfigured } from '../lib/supabase';
 
-const DEMO_CUSTOMER_BOOKINGS = [
-  {
-    id: 'BK-1092',
-    serviceName: 'AC Repair & Maintenance',
-    category: 'Household',
-    workersCount: 2,
-    daysCount: 1,
-    siteAddress: 'Flat 402, Green Valley Society, Patna',
-    startDate: '2026-09-14',
-    totalCost: 1100,
-    workerEarnings: 1023,
-    welfareFund: 55,
-    platformFee: 22,
-    status: 'ACTIVE',
-    coopName: 'Shanti Labour Cooperative',
-    assignedWorkers: ['Ramesh Kumar (AC Tech)', 'Suresh Yadav (Helper)'],
-    approvalStatus: 'PENDING_APPROVAL',
-    photos: {
-      before: '/ac-before.png',
-    },
-  },
-  {
-    id: 'BK-1088',
-    serviceName: 'Society Painting & Water-proofing',
-    category: 'Community',
-    workersCount: 4,
-    daysCount: 3,
-    siteAddress: 'Green Valley RWA Main Block',
-    startDate: '2026-09-10',
-    totalCost: 7200,
-    workerEarnings: 6696,
-    welfareFund: 360,
-    platformFee: 144,
-    status: 'COMPLETED',
-    coopName: 'Shanti Labour Cooperative',
-    assignedWorkers: ['Anita Devi (Supervisor)', 'Vikram Singh', 'Manoj Thakur', 'Deepak Rana'],
-    approvalStatus: 'APPROVED',
-    photos: {
-      before: '/wall-before.png',
-      after: '/wall-after.png',
-    },
-  },
-];
-
 export default function CustomerBookings() {
   const { t } = useTranslation();
-  const [bookings, setBookings] = useState(DEMO_CUSTOMER_BOOKINGS);
+  const { bookings, setBookings } = useAppState();
   const [disputeModalOpen, setDisputeModalOpen] = useState(false);
   const [selectedBooking, setSelectedBooking] = useState(null);
   const [disputeLogged, setDisputeLogged] = useState(null);
   const [issueType, setIssueType] = useState('cash_demand');
   const [approvedId, setApprovedId] = useState(null);
   const [photosBooking, setPhotosBooking] = useState(null);
+
+  // Review Worker State & Handlers (Requested: option to review worker's work after releasing escrow)
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [reviewBooking, setReviewBooking] = useState(null);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [hoverRating, setHoverRating] = useState(0);
+  const [reviewComment, setReviewComment] = useState('');
+  const [selectedReviewTags, setSelectedReviewTags] = useState(['⏱️ Punctual & On Time', '⭐ High Quality Finish']);
+  const [reviewSubmitted, setReviewSubmitted] = useState(false);
+
+  const handleOpenReview = (booking) => {
+    setReviewBooking(booking);
+    if (booking.review) {
+      setReviewRating(booking.review.rating || 5);
+      setReviewComment(booking.review.comment || '');
+      setSelectedReviewTags(booking.review.tags || ['⏱️ Punctual & On Time', '⭐ High Quality Finish']);
+    } else {
+      setReviewRating(5);
+      setReviewComment('');
+      setSelectedReviewTags(['⏱️ Punctual & On Time', '⭐ High Quality Finish']);
+    }
+    setReviewSubmitted(false);
+    setReviewModalOpen(true);
+  };
+
+  const handleToggleReviewTag = (tag) => {
+    setSelectedReviewTags((prev) =>
+      prev.includes(tag) ? prev.filter((t) => t !== tag) : [...prev, tag]
+    );
+  };
+
+  const handleSubmitReview = () => {
+    if (!reviewBooking) return;
+    const reviewData = {
+      rating: reviewRating,
+      tags: selectedReviewTags,
+      comment: reviewComment,
+      reviewedAt: new Date().toISOString(),
+    };
+
+    setBookings((prev) =>
+      prev.map((b) =>
+        b.id === reviewBooking.id ? { ...b, review: reviewData } : b
+      )
+    );
+
+    setReviewSubmitted(true);
+    setTimeout(() => {
+      setReviewModalOpen(false);
+      setReviewSubmitted(false);
+    }, 1400);
+  };
 
   // Core Judge Demo Feature: Live Escrow Milestone Approval
   const handleApproveEscrow = async (bookingId) => {
@@ -81,6 +90,12 @@ export default function CustomerBookings() {
       } catch (err) {
         console.warn('Escrow approval update skipped:', err.message);
       }
+    }
+
+    // Immediately prompt review modal for the approved worker
+    const target = bookings.find((b) => b.id === bookingId);
+    if (target) {
+      handleOpenReview({ ...target, approvalStatus: 'APPROVED', status: 'COMPLETED' });
     }
   };
 
@@ -154,10 +169,24 @@ export default function CustomerBookings() {
                 </div>
               </div>
 
-              {/* Workers Assigned */}
-              <div className="mb-3 text-xs text-muted">
-                <span className="font-semibold text-ink">{t('assignedWorkers') || 'Workers On Site'}: </span>
-                {b.assignedWorkers.join(', ')}
+              {/* Workers Assigned with National DPI Badges */}
+              <div className="mb-3 text-xs space-y-1.5">
+                <div className="text-muted">
+                  <span className="font-semibold text-ink">{t('assignedWorkers') || 'Workers On Site'}: </span>
+                  <span className="font-medium text-ink">{b.assignedWorkers.join(', ')}</span>
+                </div>
+                <div className="flex flex-wrap items-center gap-1.5 pt-0.5">
+                  <span className="inline-flex items-center gap-1 rounded-md bg-emerald-50 border border-emerald-200 px-2 py-0.5 text-[10px] font-bold text-emerald-800">
+                    <Icon name="CheckmarkCircle02Icon" size={11} className="text-emerald-600" />
+                    e-Shram UAN Verified
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-indigo-light border border-indigo/20 px-2 py-0.5 text-[10px] font-bold text-indigo">
+                    Skill India NSQF-4
+                  </span>
+                  <span className="inline-flex items-center gap-1 rounded-md bg-paper border border-line px-2 py-0.5 text-[10px] font-medium text-slate-700">
+                    PMSBY ₹2L Insurance Active
+                  </span>
+                </div>
               </div>
 
               {/* Transparent Financial Split (93% Worker / 5% Welfare / 2% Platform) */}
@@ -192,6 +221,48 @@ export default function CustomerBookings() {
                 </p>
               </div>
 
+              {/* Customer Review Summary (if reviewed) */}
+              {b.review && (
+                <div className="mt-2.5 rounded-xl border border-amber-200 bg-amber-50/70 p-2.5 text-xs space-y-1">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-1">
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <span
+                          key={star}
+                          className={star <= b.review.rating ? 'text-amber-500 font-bold' : 'text-slate-300'}
+                        >
+                          ★
+                        </span>
+                      ))}
+                      <span className="font-extrabold text-amber-900 text-xs ml-1">
+                        {b.review.rating}.0 / 5.0 Rating Given
+                      </span>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => handleOpenReview(b)}
+                      className="text-[10px] font-bold text-indigo hover:underline"
+                    >
+                      Edit Review
+                    </button>
+                  </div>
+                  {b.review.tags && b.review.tags.length > 0 && (
+                    <div className="flex flex-wrap gap-1 pt-0.5">
+                      {b.review.tags.map((tg, i) => (
+                        <span key={i} className="text-[10px] bg-white border border-amber-200 text-amber-900 rounded-md px-1.5 py-0.5 font-medium">
+                          {tg}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                  {b.review.comment && (
+                    <p className="text-[11px] text-slate-700 italic pt-0.5 font-medium">
+                      "{b.review.comment}"
+                    </p>
+                  )}
+                </div>
+              )}
+
               {/* Actions Footer */}
               <div className="mt-3 flex flex-wrap items-center justify-between gap-2 pt-1">
                 <div className="flex items-center gap-3">
@@ -214,7 +285,7 @@ export default function CustomerBookings() {
                   </button>
                 </div>
 
-                {/* JUDGE DEMO: Live Escrow Milestone Approval Button */}
+                {/* JUDGE DEMO: Live Escrow Milestone Approval Button & Review Option */}
                 {!isApproved ? (
                   <Button
                     variant="marigold"
@@ -225,9 +296,30 @@ export default function CustomerBookings() {
                     {t('approveEscrowRelease') || 'Approve Day 1 & Release Escrow'}
                   </Button>
                 ) : (
-                  <div className="flex items-center gap-1 text-xs font-bold text-success bg-success-light px-2.5 py-1 rounded-lg">
-                    <Icon name="CheckmarkCircle02Icon" size={14} />
-                    {t('escrowReleasedSuccess') || 'Escrow Milestone Released'}
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-1 text-xs font-bold text-success bg-success-light px-2.5 py-1 rounded-lg">
+                      <Icon name="CheckmarkCircle02Icon" size={14} />
+                      {t('escrowReleasedSuccess') || 'Escrow Released'}
+                    </div>
+
+                    {/* Review Worker Button */}
+                    {b.review ? (
+                      <button
+                        onClick={() => handleOpenReview(b)}
+                        className="flex items-center gap-1 text-xs font-bold text-amber-900 bg-amber-100/90 border border-amber-300 px-2.5 py-1 rounded-lg hover:bg-amber-200 transition-colors shadow-2xs"
+                      >
+                        <span className="text-amber-600 font-bold">★</span>
+                        <span>{b.review.rating}.0 Reviewed</span>
+                      </button>
+                    ) : (
+                      <button
+                        onClick={() => handleOpenReview(b)}
+                        className="flex items-center gap-1 text-xs font-bold text-white bg-amber-500 hover:bg-amber-600 px-3 py-1 rounded-lg shadow-xs active:scale-95 transition-all"
+                      >
+                        <span>★</span>
+                        <span>Review Worker</span>
+                      </button>
+                    )}
                   </div>
                 )}
               </div>
@@ -386,6 +478,154 @@ export default function CustomerBookings() {
           <Button variant="primary" className="w-full" onClick={() => setPhotosBooking(null)}>
             {t('done') || 'Done'}
           </Button>
+        </div>
+      </Modal>
+
+      {/* Review Worker's Work Modal */}
+      <Modal open={reviewModalOpen} onClose={() => setReviewModalOpen(false)} maxWidth="max-w-md">
+        <div className="space-y-4">
+          <div className="flex items-center gap-2.5">
+            <span className="flex size-10 items-center justify-center rounded-2xl bg-amber-100 text-amber-600 font-bold text-lg shadow-2xs">
+              ★
+            </span>
+            <div>
+              <h3 className="text-base font-extrabold text-ink">
+                {t('reviewWorkerTitle') || "Review Worker's Work"}
+              </h3>
+              <p className="text-xs text-muted font-medium">
+                {reviewBooking?.serviceName} · {reviewBooking?.assignedWorkers?.[0] || 'Cooperative Crew'}
+              </p>
+            </div>
+          </div>
+
+          {/* Escrow Released Confirmation Note */}
+          <div className="rounded-xl border border-emerald-200 bg-emerald-50/80 p-3 text-xs flex items-start gap-2.5 text-emerald-900">
+            <Icon name="CheckmarkCircle02Icon" size={16} className="text-emerald-600 shrink-0 mt-0.5" />
+            <div>
+              <span className="font-bold block">Escrow Milestone Released</span>
+              <span className="text-[11px] text-emerald-800">
+                Milestone payout of ₹{reviewBooking?.workerEarnings || reviewBooking?.totalCost || 550} has been released directly to the worker's cooperative bank account.
+              </span>
+            </div>
+          </div>
+
+          {!reviewSubmitted ? (
+            <>
+              {/* Star Rating Selector */}
+              <div className="space-y-2 text-center py-2 bg-surface rounded-2xl border border-line p-3">
+                <span className="text-xs font-bold text-muted uppercase tracking-wider block">
+                  Tap to Rate Workmanship
+                </span>
+                <div className="flex items-center justify-center gap-2">
+                  {[1, 2, 3, 4, 5].map((star) => {
+                    const active = (hoverRating || reviewRating) >= star;
+                    return (
+                      <button
+                        type="button"
+                        key={star}
+                        onMouseEnter={() => setHoverRating(star)}
+                        onMouseLeave={() => setHoverRating(0)}
+                        onClick={() => setReviewRating(star)}
+                        className="p-1 transition-transform hover:scale-115 active:scale-90 focus:outline-none"
+                      >
+                        <svg
+                          width="32"
+                          height="32"
+                          viewBox="0 0 24 24"
+                          fill={active ? '#F59E0B' : 'none'}
+                          stroke={active ? '#F59E0B' : '#CBD5E1'}
+                          strokeWidth="2"
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                        >
+                          <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                      </button>
+                    );
+                  })}
+                </div>
+                <span className="text-xs font-bold text-amber-600">
+                  {reviewRating === 5 && '★★★★★ Exceptional (5/5)'}
+                  {reviewRating === 4 && '★★★★☆ Very Good (4/5)'}
+                  {reviewRating === 3 && '★★★☆☆ Good / Satisfactory (3/5)'}
+                  {reviewRating === 2 && '★★☆☆☆ Needs Improvement (2/5)'}
+                  {reviewRating === 1 && '★☆☆☆☆ Unsatisfactory (1/5)'}
+                </span>
+              </div>
+
+              {/* Quality Badges / Compliment Tags */}
+              <div className="space-y-1.5">
+                <span className="text-xs font-bold text-ink block">Quick Feedback Tags</span>
+                <div className="flex flex-wrap gap-1.5">
+                  {[
+                    '⏱️ Punctual & On Time',
+                    '🧹 Clean & Tidy',
+                    '🤝 Courteous & Polite',
+                    '👔 Professional Tools',
+                    '⭐ High Quality Finish',
+                    '🛡️ Zero Cash Demanded',
+                  ].map((tag) => {
+                    const selected = selectedReviewTags.includes(tag);
+                    return (
+                      <button
+                        type="button"
+                        key={tag}
+                        onClick={() => handleToggleReviewTag(tag)}
+                        className={`text-xs px-2.5 py-1 rounded-xl border font-medium transition-all ${
+                          selected
+                            ? 'bg-indigo text-white border-indigo shadow-2xs font-semibold'
+                            : 'bg-paper text-muted border-line hover:bg-surface hover:text-ink'
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* Comment Textarea */}
+              <div className="space-y-1">
+                <span className="text-xs font-bold text-ink block">Comments / Testimonial</span>
+                <textarea
+                  rows={2}
+                  value={reviewComment}
+                  onChange={(e) => setReviewComment(e.target.value)}
+                  placeholder="Share details about the work done, punctuality, or tools..."
+                  className="input text-xs"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="flex gap-2 pt-2">
+                <Button
+                  variant="ghost"
+                  className="flex-1"
+                  onClick={() => setReviewModalOpen(false)}
+                >
+                  {t('skip') || 'Later'}
+                </Button>
+                <Button
+                  variant="primary"
+                  className="flex-1 !bg-indigo hover:!bg-indigo-dark font-bold text-xs"
+                  onClick={handleSubmitReview}
+                >
+                  Submit Review
+                </Button>
+              </div>
+            </>
+          ) : (
+            /* Thank You Success Animation / State */
+            <div className="py-6 text-center space-y-3">
+              <div className="mx-auto flex size-14 items-center justify-center rounded-full bg-emerald-100 text-emerald-600 text-2xl font-bold">
+                ✓
+              </div>
+              <h4 className="text-base font-extrabold text-ink">Review Submitted!</h4>
+              <p className="text-xs text-muted max-w-xs mx-auto">
+                Thank you! Your rating will help the cooperative reward top-performing workers with incentive points and fair allocation priority.
+              </p>
+            </div>
+          )}
         </div>
       </Modal>
     </PageShell>

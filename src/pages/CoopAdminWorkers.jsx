@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { PageShell } from '../components/PageShell';
+import { CoopAdminLayout } from '../components/CoopAdminLayout';
 import { Block } from '../components/Block';
 import { DataTable } from '../components/DataTable';
 import { Button } from '../components/Button';
@@ -14,6 +14,8 @@ export default function CoopAdminWorkers() {
     name: '',
     phone: '',
     adhaar: '',
+    eShramUan: '',
+    nsqfLevel: 'NSQF-4 (PMKVY)',
     skill: '',
     yearsExperience: '3',
     rate: '500',
@@ -24,19 +26,21 @@ export default function CoopAdminWorkers() {
     if (!form.name || !form.phone || !form.adhaar) return;
     addWorker({
       ...form,
+      eShramUan: form.eShramUan || '2847 9102 4821',
+      nsqfLevel: form.nsqfLevel || 'NSQF-4 (PMKVY)',
+      pmsbyStatus: 'PMSBY ₹2L Active',
       yearsExperience: Number(form.yearsExperience) || 3,
       rate: Number(form.rate) || 500,
     });
     setModalOpen(false);
-    setForm({ name: '', phone: '', adhaar: '', skill: '', yearsExperience: '3', rate: '500' });
+    setForm({ name: '', phone: '', adhaar: '', eShramUan: '', nsqfLevel: 'NSQF-4 (PMKVY)', skill: '', yearsExperience: '3', rate: '500' });
   };
 
   return (
-    <PageShell
+    <CoopAdminLayout
+      activeNav="workers"
       title="Worker Roster & Verification"
       subtitle="Registered cooperative members, Aadhaar identity verification, and onboarding"
-      wide
-      roleNav="coop"
     >
       <div className="space-y-4">
         <div className="flex items-center justify-between">
@@ -85,6 +89,20 @@ export default function CoopAdminWorkers() {
               },
               { key: 'phone', label: 'Phone Number' },
               { key: 'adhaar', label: 'Aadhaar ID' },
+              {
+                key: 'dpiVerification',
+                label: 'National DPI Badges',
+                render: (r) => (
+                  <div className="space-y-1">
+                    <span className="inline-flex items-center gap-1 font-mono text-[10px] text-emerald-800 bg-emerald-50 border border-emerald-200 px-1.5 py-0.5 rounded font-bold">
+                      ✓ e-Shram: {r.eShramUan || '2847 9102 4821'}
+                    </span>
+                    <span className="block text-[10px] text-indigo font-semibold">
+                      🎓 {r.nsqfLevel || 'NSQF-4 (PMKVY)'}
+                    </span>
+                  </div>
+                ),
+              },
               { key: 'skill', label: 'Skills & Trade' },
               {
                 key: 'yearsExperience',
@@ -148,6 +166,32 @@ export default function CoopAdminWorkers() {
               </div>
             </div>
 
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <label className="block font-semibold text-ink mb-1">e-Shram UAN (National ID)</label>
+                <input
+                  value={form.eShramUan}
+                  onChange={(e) => setForm({ ...form, eShramUan: e.target.value })}
+                  placeholder="2847 9102 4821"
+                  className="input text-xs font-mono"
+                />
+              </div>
+
+              <div>
+                <label className="block font-semibold text-ink mb-1">Skill Certification</label>
+                <select
+                  value={form.nsqfLevel}
+                  onChange={(e) => setForm({ ...form, nsqfLevel: e.target.value })}
+                  className="input text-xs font-semibold"
+                >
+                  <option value="NSQF-4 (PMKVY)">NSQF Level 4 (PMKVY Certified)</option>
+                  <option value="NSQF-5 (Advanced)">NSQF Level 5 (Master Craftsman)</option>
+                  <option value="NSQF-6 (Supervisor)">NSQF Level 6 (Lead Supervisor)</option>
+                  <option value="Coop Verified">Cooperative Society Verified</option>
+                </select>
+              </div>
+            </div>
+
             <div>
               <label className="block font-semibold text-ink mb-1">Trade Skills (Comma-separated)</label>
               <input
@@ -196,6 +240,6 @@ export default function CoopAdminWorkers() {
           </div>
         </form>
       </Modal>
-    </PageShell>
+    </CoopAdminLayout>
   );
 }
